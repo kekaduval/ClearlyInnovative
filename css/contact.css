@@ -2,7 +2,7 @@
  * --------------------------------------- */
 
 body {
-  font-family: 'Anonymous Pro', monospace;  
+  font-family: 'Anonymous Pro', monospace;
   color: #333;
   color: rgba(0, 0, 0, 0.5);
 }
@@ -122,13 +122,13 @@ button.button {
 /*Typewriter for Say Hello :)*/
 
 .line-1{
-  font-family: Consolas, monospace;    
+  font-family: Consolas, monospace;
     margin: 0 auto;
     border-right: 4px solid rgba(255,255,255,.75);
     text-align: center;
     white-space: nowrap;
     overflow: hidden;
-    transform: translateY(-50%);    
+    transform: translateY(-50%);
 }
 
 
@@ -414,7 +414,7 @@ button.button {
 
 /*Color Background*/
 #section0 {
-background-color: blue;  
+background-color: blue;
   -webkit-animation-name: example; /* Chrome, Safari, Opera */
   -webkit-animation-duration: 16s; /* Chrome, Safari, Opera */
   animation-name: example;
