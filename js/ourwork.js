@@ -1,261 +1,101 @@
- /*********************
-               *	Helpers Code
-               ********************/
-/**
-                                      *  @function   DOMReady
-                                      *
-                                      *  @param callback
-                                      *  @param element
-                                      *  @param listener
-                                      *  @returns {*}
-                                      *  @constructor
-                                      */
-var DOMReady = function DOMReady()
+//our work sliders //
+var Lslide      = document.querySelectorAll('.Lslide'),
+    Rslide      = document.querySelectorAll('.Rslide'),
+    control     = document.querySelectorAll('.oncontrol'),
+    slideHeight = document.querySelector('.wrapper').clientHeight,
+    color = ['#fdc97c', '#e5d3d0', '#71b3d6'],
+    index = 0;
 
 
+function init() {
+    slideHeight = document.querySelector('.wrapper').clientHeight;
+    for (i = 0; i < Lslide.length; i++) {
+        Lslide[i].style.backgroundColor = color[i];
+        Lslide[i].style.top = -slideHeight * i + "px";
+        Rslide[i].style.top = slideHeight * i + "px";
+    }
+}
+init()
+window.addEventListener('resize', function(){
+    init()
+});
 
-{var callback = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : function () {};var element = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : document;var listener = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'addEventListener';
-  return element[listener] ? element[listener]('DOMContentLoaded', callback) : window.attachEvent('onload', callback);
-};
+function moveToTop() {
 
-/**
-    *  @function   ProjectAPI
-    *
-    *  @type {{hasClass, addClass, removeClass}}
-    */
-var ProjectAPI = function () {
-  var hasClass = void 0,
-  addClass = void 0,
-  removeClass = void 0;
-
-  hasClass = function hasClass(el, className) {
-    if (el === null) {
-      return;
+    index++;
+    for (el = 0; el < Lslide.length; el++) {
+        Lslide[el].style.top = parseInt(Lslide[el].style.top) + slideHeight + "px";
+        Rslide[el].style.top = parseInt(Rslide[el].style.top) - slideHeight + "px";
     }
 
-    if (el.classList) {
-      return el.classList.contains(className);
-    } else
-    {
-      return !!el.className.match(new RegExp('(\\s|^)' + className + '(\\s|$)'));
+    if (index > Lslide.length-1) {
+        index = 0;
+        for (el = 0; el < Lslide.length; el++) {
+            Lslide[el].style.top = -slideHeight * el + "px";
+            Rslide[el].style.top = slideHeight * el + "px";
+        }
     }
-  };
+}
 
-  addClass = function addClass(el, className) {
-    if (el === null) {
-      return;
+function moveToBottom() {
+    index--;
+    for (el = 0; el < Lslide.length; el++) {
+        Lslide[el].style.top = parseInt(Lslide[el].style.top) - slideHeight + "px";
+        Rslide[el].style.top = parseInt(Rslide[el].style.top) + slideHeight + "px";
+
     }
-
-    if (el.classList) {
-      el.classList.add(className);
-    } else
-    if (!hasClass(el, className)) {
-      el.className += ' ' + className;
+    if (index < 0) {
+        index = Rslide.length-1;
+        for (el = 0; el < Lslide.length; el++) {
+            Lslide[el].style.top = parseInt(Lslide[el].style.top) + slideHeight * Lslide.length + "px";
+            Rslide[el].style.top = parseInt(Rslide[el].style.top) - slideHeight * Rslide.length + "px";
+        }
     }
-  };
+}
 
-  removeClass = function removeClass(el, className) {
-    if (el === null) {
-      return;
+function transition() {
+    for (t = 0; t < Lslide.length; t++) {
+        Lslide[t].style.transition = "all 0.8s";
+        Rslide[t].style.transition = "all 0.8s";
     }
-
-    if (el.classList) {
-      el.classList.remove(className);
-    } else
-    if (hasClass(el, className)) {
-      var reg = new RegExp('(\\s|^)' + className + '(\\s|$)');
-
-      el.className = el.className.replace(reg, ' ');
-    }
-  };
-
-  return {
-    hasClass: hasClass,
-    addClass: addClass,
-    removeClass: removeClass };
-
-}();
+}
 
 
-/*********************
-      *	Application Code
-      ********************/
-/**
-                             *  @function   readyFunction
-                             *
-                             *  @type {Function}
-                             */
-var readyFunction = function readyFunction() {
+for (t = 0; t < control.length; t++) {
+    control[t].addEventListener("click", function() {
 
-  var KEY_UP = 38;
-  var KEY_DOWN = 40;
+        if (this.classList.contains('control-top')) {
+            moveToTop()
+        }
+        if (this.classList.contains('control-bottom')) {
+            moveToBottom()
+        }
 
-  var scrollingClass = 'js-scrolling',
-  scrollingActiveClass = scrollingClass + '--active',
-  scrollingInactiveClass = scrollingClass + '--inactive',
+        transition()
 
-  scrollingTime = 1350,
-  scrollingIsActive = false,
+    });
+}
 
-  currentPage = 1,
-  countOfPages = document.querySelectorAll('.' + scrollingClass + '__page').length,
+var wheeling;
+function mousemouve(e) {
 
-  prefixPage = '.' + scrollingClass + '__page-',
+    clearTimeout(wheeling);
+    e.preventDefault();
+    var e = window.event || e;
+    var delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
 
-  _switchPages = void 0,
-  _scrollingUp = void 0,
-  _scrollingDown = void 0,
+    wheeling = setTimeout(function() {
+        wheeling = undefined;
+        if (delta === 1) {
+            moveToTop()
+        }
+        if (delta === -1) {
+            moveToBottom()
+        }
+    }, 100);
 
-  _mouseWheelEvent = void 0,
-  _keyDownEvent = void 0,
+    transition()
+}
 
-  init = void 0;
-
-  /**
-                  *  @function _switchPages
-                  *
-                  *  @private
-                  */
-  _switchPages = function _switchPages() {
-
-    var _getPageDomEl = void 0;
-
-    /**
-                                  *  @function _getPageDomEl
-                                  *
-                                  *  @param page
-                                  *  @returns {Element}
-                                  *  @private
-                                 */
-    _getPageDomEl = function _getPageDomEl() {var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : currentPage;
-      return document.querySelector(prefixPage + page);
-    };
-
-    scrollingIsActive = true;
-
-
-    ProjectAPI.removeClass(
-    _getPageDomEl(),
-    scrollingInactiveClass);
-
-    ProjectAPI.addClass(
-    _getPageDomEl(),
-    scrollingActiveClass);
-
-
-    ProjectAPI.addClass(
-    _getPageDomEl(currentPage - 1),
-    scrollingInactiveClass);
-
-
-    ProjectAPI.removeClass(
-    _getPageDomEl(currentPage + 1),
-    scrollingActiveClass);
-
-
-
-    setTimeout(
-    function () {
-      return scrollingIsActive = false;
-    },
-    scrollingTime);
-
-  };
-  /**
-       *  @function _scrollingUp
-       *
-       *  @private
-       */
-  _scrollingUp = function _scrollingUp() {
-    if (currentPage === 1) {
-      return;
-    }
-
-    currentPage--;
-
-    _switchPages();
-  };
-  /**
-       *  @function _scrollingDown
-       *
-       *  @private
-       */
-  _scrollingDown = function _scrollingDown() {
-    if (currentPage === countOfPages) {
-      return;
-    }
-
-    currentPage++;
-
-    _switchPages();
-  };
-  /**
-       *  @function _mouseWheelEvent
-       *
-       *  @param e
-       *  @private
-       */
-  _mouseWheelEvent = function _mouseWheelEvent(e) {
-    if (scrollingIsActive) {
-      return;
-    }
-
-    if (e.wheelDelta > 0 || e.detail < 0) {
-      _scrollingUp();
-    } else
-    if (e.wheelDelta < 0 || e.detail > 0) {
-      _scrollingDown();
-    }
-  };
-  /**
-       *  @function _keyDownEvent
-       *
-       *  @param e
-       *  @private
-       */
-  _keyDownEvent = function _keyDownEvent(e) {
-    if (scrollingIsActive) {
-      return;
-    }
-
-    var keyCode = e.keyCode || e.which;
-
-    if (keyCode === KEY_UP) {
-      _scrollingUp();
-    } else
-    if (keyCode === KEY_DOWN) {
-      _scrollingDown();
-    }
-  };
-
-  /**
-      *  @function init
-      *
-      *  @note     auto-launch
-      */
-  init = function () {
-    document.addEventListener(
-    'mousewheel',
-    _mouseWheelEvent,
-    false);
-
-    document.addEventListener(
-    'DOMMouseScroll',
-    _mouseWheelEvent,
-    false);
-
-
-    document.addEventListener(
-    'keydown',
-    _keyDownEvent,
-    false);
-
-  }();
-
-};
-
-
-/**
-    *  Launcher
-    */
-DOMReady(readyFunction);
+document.addEventListener("mousewheel", mousemouve);
+document.addEventListener("DOMMouseScroll", mousemouve);
