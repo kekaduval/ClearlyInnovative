@@ -21,7 +21,7 @@ body {
   padding: 10vh 10vw;
 }
 .com__section {
-  display: flex;
+  /* display: flex; */
   flex-flow: column wrap;
   justify-content: center;
   height: 100vh;

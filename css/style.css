@@ -6,10 +6,10 @@ body {
   background: #fff;
 }
 .bio p{
-  font-size: 21px;
+  font-size: 23px;
   color: #fff;
-  margin: auto;
-  font-weight: 700;
+  margin: 15px;
+  font-weight: 800;
 }
 body section {
   display: block;
@@ -62,8 +62,10 @@ body a {
 .bg-wrapper {
   width: 100%;
   height: 100%;
-  background-image: linear-gradient(rgba(white), rgba(black));
+  /* background-image: linear-gradient(rgba(243, 129, 129, 0.9), rgba(252, 227, 138, 0.9)); */
+
 }
+
 .section-header {
   padding-top: 5.625em;
   text-align: center;
@@ -166,8 +168,14 @@ body a {
 }
 #section-1 .content-slider .slider .banner .banner-inner-wrapper {
   height: 100%;
-  padding-top: 6em;
-  background-image: linear-gradient(rgba(243, 129, 129, 0.9), rgba(252, 227, 138, 0.9));
+  width: 100%;
+  /* padding-top: 6em; */
+  background-image: url("https://www.dropbox.com/s/2ct0i6kc61vp0bh/wall.jpg?raw=1");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: #141414;
+  /* background-image: linear-gradient(rgba(243, 129, 129, 0.9), rgba(252, 227, 138, 0.9)); */
   box-sizing: border-box;
 }
 #section-1 .content-slider .slider .banner .banner-inner-wrapper h2 {
@@ -475,4 +483,5 @@ body a {
   }
 }
 
-/*contact Form   */
+/*Social Media  */
+
